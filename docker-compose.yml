@@ -12,7 +12,7 @@ services:
       - ./sql/init:/docker-entrypoint-initdb.d:ro
       - ./sql/scheduled:/scripts:ro
     ports:
-      - 127.0.0.1:3306:3306 # for development
+      - 127.0.0.1:3307:3306 # for development
     environment:
       - MARIADB_USER=bot
       - MARIADB_PASSWORD=botpw

@@ -1965,6 +1965,8 @@ class LastFm(commands.Cog):
         """
         timeframe = Period.WEEK
         size = ChartSize(3, 3)
+        contributors = 0
+
         for arg in args:
             if isinstance(arg, Period):
                 timeframe = arg
@@ -2001,6 +2003,8 @@ class LastFm(commands.Cog):
                 if len(artists) == 0:
                     continue
 
+                contributors += 1
+
                 lowest_playcount = int(artists[-1]["playcount"])
                 highest_playcount = int(artists[0]["playcount"])
                 for artist in artists:
@@ -2023,11 +2027,14 @@ class LastFm(commands.Cog):
                 artist_map.items(), key=lambda x: x[1]["score"], reverse=True
             )[: size.count]
 
-            for i, (name, data) in enumerate(top_artists):
+            if not top_artists:
+                return await ctx.send("Nobody on this server has listened to anything!")
+
+            for i, (name, artist_data) in enumerate(top_artists):
                 chart_nodes.append(
                     (
                         await self.api.get_artist_image(name),
-                        f"<p class='label'>{name}<p><p class='playcount'>{data['score'] / len(data):.2f}%<p>",
+                        f"<p class='label'>{name}<p><p class='playcount'>{artist_data['score'] / contributors:.2f}%<p>",
                     )
                 )
                 if topster:
@@ -2103,6 +2110,8 @@ class LastFm(commands.Cog):
                 if len(albums) == 0:
                     continue
 
+                contributors += 1
+
                 lowest_playcount = int(albums[-1]["playcount"])
                 highest_playcount = int(albums[0]["playcount"])
                 for album in albums:
@@ -2128,11 +2137,14 @@ class LastFm(commands.Cog):
                 album_map.items(), key=lambda x: x[1]["score"], reverse=True
             )[: size.count]
 
-            for i, (name, data) in enumerate(top_albums):
+            if not top_albums:
+                return await ctx.send("Nobody on this server has listened to anything!")
+
+            for i, (name, album_data) in enumerate(top_albums):
                 chart_nodes.append(
                     (
-                        LastFmImage.from_url(data["image"]),
-                        f"<p class='label'>{name}</p><p class='playcount'>{data['score'] / len(data):.2f}%</p>",
+                        LastFmImage.from_url(album_data["image"]),
+                        f"<p class='label'>{name}</p><p class='playcount'>{album_data['score'] / contributors:.2f}%</p>",
                     )
                 )
                 if topster:
