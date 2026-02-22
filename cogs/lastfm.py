@@ -1441,6 +1441,9 @@ class LastFm(commands.Cog):
 
         albums = []
         for image, label in chart_nodes:
+            if image is None:
+                image = LastFmImage(LastFmImage.MISSING_IMAGE_HASH)
+
             if size.width < 5:
                 image_url = image.as_full()
             elif 9 > size.width >= 5:
@@ -2031,9 +2034,13 @@ class LastFm(commands.Cog):
                 return await ctx.send("Nobody on this server has listened to anything!")
 
             for i, (name, artist_data) in enumerate(top_artists):
+                image = await self.api.get_artist_image(name)
+                if image is None:
+                    image = LastFmImage(LastFmImage.MISSING_IMAGE_HASH)
+
                 chart_nodes.append(
                     (
-                        await self.api.get_artist_image(name),
+                        image,
                         f"<p class='label'>{name}<p><p class='playcount'>{artist_data['score'] / contributors:.2f}%<p>",
                     )
                 )
