@@ -1649,6 +1649,7 @@ class LastFm(commands.Cog):
         """Combined top artists of server members"""
         timeframe = Period.OVERALL
         mode="score"
+        contributors = 0
 
         for arg in args: 
             if isinstance(arg, Period):
@@ -1673,6 +1674,8 @@ class LastFm(commands.Cog):
             artists = member_data["artist"]
             if len(artists) == 0:
                 continue
+
+            contributors += 1
 
             lowest_playcount = int(artists[-1]["playcount"])
             highest_playcount = int(artists[0]["playcount"])
@@ -1708,7 +1711,7 @@ class LastFm(commands.Cog):
         for i, (artist, artist_data) in enumerate(top_artists, start=1):
             if mode == "score":
                 rows.append(
-                    f"`#{i:2}` **{artist_data['score'] / len(data):.2f}%** /"
+                    f"`#{i:2}` **{artist_data['score'] / contributors:.2f}%** /"
                     f" **{artist_data['playcount']}** plays • **{artist}**"
                 )
             else:
@@ -1717,9 +1720,9 @@ class LastFm(commands.Cog):
                 )
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 artists of {len(data)} members")
+            footer = (f"Score calculated from top 100 artists of {contributors} members")
         else:
-            footer = (f"Ranked by scrobbles from top 100 artists of {len(data)} members")
+            footer = (f"Ranked by scrobbles from top 100 artists of {contributors} members")
 
         await self.paginated_user_stat_embed(
             ctx,
@@ -1742,6 +1745,7 @@ class LastFm(commands.Cog):
         """Combined top tracks of server members"""
         timeframe = Period.OVERALL
         mode = "score"
+        contributors = 0
 
         for arg in args:
             if isinstance(arg, Period):
@@ -1766,6 +1770,8 @@ class LastFm(commands.Cog):
             tracks = member_data["track"]
             if len(tracks) == 0:
                 continue
+
+            contributors += 1
 
             lowest_playcount = int(tracks[-1]["playcount"])
             highest_playcount = int(tracks[0]["playcount"])
@@ -1807,7 +1813,7 @@ class LastFm(commands.Cog):
         for i, (track, track_data) in enumerate(top_tracks, start=1):
             if mode == "score":
                 rows.append(
-                    f"`#{i:2}` **{track_data['score'] / len(data):.2f}%** /"
+                    f"`#{i:2}` **{track_data['score'] / contributors:.2f}%** /"
                     f" **{track_data['playcount']}** plays • {track}"
                 )
             else:
@@ -1816,9 +1822,9 @@ class LastFm(commands.Cog):
                 )
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 tracks of {len(data)} members")
+            footer = (f"Score calculated from top 100 tracks of {contributors} members")
         else:
-            footer = (f"Ranked by scrobbles from top 100 tracks of {len(data)} members")
+            footer = (f"Ranked by scrobbles from top 100 tracks of {contributors} members")
 
         await self.paginated_user_stat_embed(
             ctx,
@@ -1841,6 +1847,7 @@ class LastFm(commands.Cog):
         """Combined top albums of server members"""
         timeframe = Period.OVERALL
         mode = "score"
+        contributors = 0
 
         for arg in args:
             if isinstance(arg, Period):
@@ -1865,6 +1872,8 @@ class LastFm(commands.Cog):
             albums = member_data["album"]
             if len(albums) == 0:
                 continue
+
+            contributors += 1
 
             lowest_playcount = int(albums[-1]["playcount"])
             highest_playcount = int(albums[0]["playcount"])
@@ -1906,7 +1915,7 @@ class LastFm(commands.Cog):
         for i, (album, album_data) in enumerate(top_albums, start=1):
             if mode == "score":
                 rows.append(
-                    f"`#{i:2}` **{album_data['score'] / len(data):.2f}%** /"
+                    f"`#{i:2}` **{album_data['score'] / contributors:.2f}%** /"
                     f" **{album_data['playcount']}** plays • {album}"
                 )
             else:
@@ -1915,9 +1924,9 @@ class LastFm(commands.Cog):
                 )
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 albums of {len(data)} members")
+            footer = (f"Score calculated from top 100 albums of {contributors} members")
         else:
-            footer = (f"Ranked by scrobbles from top 100 albums of {len(data)} members")
+            footer = (f"Ranked by scrobbles from top 100 albums of {contributors} members")
 
         await self.paginated_user_stat_embed(
             ctx,
