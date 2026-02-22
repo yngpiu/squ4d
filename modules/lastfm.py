@@ -92,7 +92,7 @@ class Period(Enum):
     def display(self):
         match self:
             case Period.OVERALL:
-                return "Alltime"
+                return "All Time"
             case Period.WEEK:
                 return "Weekly"
             case Period.MONTH:
@@ -100,7 +100,7 @@ class Period(Enum):
             case Period.QUARTER:
                 return "Quarterly"
             case Period.HALFYEAR:
-                return "6 month"
+                return "6 Months"
             case Period.YEAR:
                 return "Yearly"
 

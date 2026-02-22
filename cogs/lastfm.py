@@ -1817,7 +1817,7 @@ class LastFm(commands.Cog):
         await self.paginated_user_stat_embed(
             ctx,
             rows,
-            f"Top 100 Tracks ({timeframe.display()})",
+            f"Top 100 Albums ({timeframe.display()})",
             image=LastFmImage.from_url(top_albums[0][1]["image"]),
             footer=f"Score calculated from top 100 albums of {len(data)} members",
             server_target=True,
