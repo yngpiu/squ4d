@@ -279,8 +279,9 @@ class Roles(commands.Cog):
 
         # clean up any roles that are left with 0 users
         unused_roles = filter(
-            lambda r: r.id in [x[1] for x in existing_roles or []]
-            and len(r.members) == 0,
+            lambda r: (
+                r.id in [x[1] for x in existing_roles or []] and len(r.members) == 0
+            ),
             ctx.guild.roles,
         )
         for role in unused_roles:

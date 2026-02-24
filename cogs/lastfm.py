@@ -171,7 +171,8 @@ class ChartOption:
             )
 
         return argument
-    
+
+
 class ServerRankingArgument(commands.Converter):
     ALIASES = {
         "score": "score",
@@ -182,9 +183,7 @@ class ServerRankingArgument(commands.Converter):
     async def convert(cls, _ctx, argument: str):
         key = argument.lower()
         if key not in cls.ALIASES:
-            raise commands.BadArgument(
-                "Valid options are: `score`, `scrobble`."
-            )
+            raise commands.BadArgument("Valid options are: `score`, `scrobble`.")
         return cls.ALIASES[key]
 
 
@@ -1640,7 +1639,9 @@ class LastFm(commands.Cog):
 
         await RowPaginator(content, rows).run(ctx)
 
-    @server.command(name="topartists", aliases=["ta"], usage="[timeframe] ['score' | 'scrobble']")
+    @server.command(
+        name="topartists", aliases=["ta"], usage="[timeframe] ['score' | 'scrobble']"
+    )
     async def server_topartists(
         self,
         ctx: MisoContext,
@@ -1651,10 +1652,10 @@ class LastFm(commands.Cog):
     ):
         """Combined top artists of server members"""
         timeframe = Period.OVERALL
-        mode="score"
+        mode = "score"
         contributors = 0
 
-        for arg in args: 
+        for arg in args:
             if isinstance(arg, Period):
                 timeframe = arg
             else:
@@ -1723,9 +1724,11 @@ class LastFm(commands.Cog):
                 )
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 artists of {contributors} members")
+            footer = f"Score calculated from top 100 artists of {contributors} members"
         else:
-            footer = (f"Ranked by scrobbles from top 100 artists of {contributors} members")
+            footer = (
+                f"Ranked by scrobbles from top 100 artists of {contributors} members"
+            )
 
         await self.paginated_user_stat_embed(
             ctx,
@@ -1736,14 +1739,16 @@ class LastFm(commands.Cog):
             server_target=True,
         )
 
-    @server.command(name="toptracks", aliases=["tt"], usage="[timeframe] ['score' | 'scrobble']")
+    @server.command(
+        name="toptracks", aliases=["tt"], usage="[timeframe] ['score' | 'scrobble']"
+    )
     async def server_toptracks(
         self,
         ctx: MisoContext,
         *args: Union[
             Annotated[Period, PeriodArgument],
             Annotated[str, ServerRankingArgument],
-        ]
+        ],
     ):
         """Combined top tracks of server members"""
         timeframe = Period.OVERALL
@@ -1820,14 +1825,14 @@ class LastFm(commands.Cog):
                     f" **{track_data['playcount']}** plays • {track}"
                 )
             else:
-                rows.append(
-                    f"`#{i:2}` **{track_data['playcount']}** plays • {track}"
-                )
+                rows.append(f"`#{i:2}` **{track_data['playcount']}** plays • {track}")
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 tracks of {contributors} members")
+            footer = f"Score calculated from top 100 tracks of {contributors} members"
         else:
-            footer = (f"Ranked by scrobbles from top 100 tracks of {contributors} members")
+            footer = (
+                f"Ranked by scrobbles from top 100 tracks of {contributors} members"
+            )
 
         await self.paginated_user_stat_embed(
             ctx,
@@ -1838,7 +1843,9 @@ class LastFm(commands.Cog):
             server_target=True,
         )
 
-    @server.command(name="topalbums", aliases=["talb"], usage="[timeframe] ['score' | 'scrobble']")
+    @server.command(
+        name="topalbums", aliases=["talb"], usage="[timeframe] ['score' | 'scrobble']"
+    )
     async def server_topalbums(
         self,
         ctx: MisoContext,
@@ -1922,14 +1929,14 @@ class LastFm(commands.Cog):
                     f" **{album_data['playcount']}** plays • {album}"
                 )
             else:
-                rows.append(
-                    f"`#{i:2}` **{album_data['playcount']}** plays • {album}"
-                )
+                rows.append(f"`#{i:2}` **{album_data['playcount']}** plays • {album}")
 
         if mode == "score":
-            footer = (f"Score calculated from top 100 albums of {contributors} members")
+            footer = f"Score calculated from top 100 albums of {contributors} members"
         else:
-            footer = (f"Ranked by scrobbles from top 100 albums of {contributors} members")
+            footer = (
+                f"Ranked by scrobbles from top 100 albums of {contributors} members"
+            )
 
         await self.paginated_user_stat_embed(
             ctx,
