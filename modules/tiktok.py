@@ -36,7 +36,7 @@ def error_code_to_message(error_code):
 
 class TikTokNew:
     BASE_URL: str = "https://ssstik.io"
-    EMOJI = "<:tiktok:1050401570090647582>"
+    EMOJI = "<:tiktok:1477035361803833384>"
     HEADERS: Dict[str, str] = {
         "Host": "ssstik.io",
         "User-Agent": (

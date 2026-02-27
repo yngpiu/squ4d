@@ -302,7 +302,7 @@ class BaseEmbedder:
 
 class InstagramEmbedder(BaseEmbedder):
     NAME = "instagram"
-    EMOJI = "<:ig:937425165162262528>"
+    EMOJI = "<:instagram:1477035200759337073>"
     NO_RESULTS_ERROR = "Found no valid Instagram posts to embed!"
 
     @staticmethod
@@ -443,7 +443,7 @@ class InstagramEmbedder(BaseEmbedder):
 
 class TikTokEmbedder(BaseEmbedder):
     NAME = "tiktok"
-    EMOJI = "<:tiktok:1050401570090647582>"
+    EMOJI = "<:tiktok:1477035361803833384>"
     NO_RESULTS_ERROR = "Found no TikTok links to embed!"
 
     def __init__(self, bot: "MisoBot"):
@@ -507,7 +507,7 @@ class TikTokEmbedder(BaseEmbedder):
 
 class TwitterEmbedder(BaseEmbedder):
     NAME = "twitter"
-    EMOJI = "<:x_:1135484782642466897>"
+    EMOJI = "<:twitter:1477035517303455744>"
     NO_RESULTS_ERROR = "Found no Twitter/X links to embed!"
 
     @staticmethod
