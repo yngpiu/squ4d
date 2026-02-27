@@ -172,7 +172,8 @@ class MisoBot(commands.AutoShardedBot):
 
     async def close(self):
         """Overrides built-in close()"""
-        await self.session.close()
+        if hasattr(self, "session"):
+            await self.session.close()
         await self.db.cleanup()
         await super().close()
 
