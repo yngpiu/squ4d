@@ -9,16 +9,10 @@ from loguru import logger
 
 class Keychain:
     def __init__(self):
-        self.NAVER_APPID: str = ""
-        self.NAVER_TOKEN: str = ""
         self.LASTFM_API_KEY: str = ""
         self.LASTFM_SECRET: str = ""
         self.GCS_DEVELOPER_KEY: str = ""
-        self.THESAURUS_KEY: str = ""
-        self.THESAURUS_INTERMEDIATE_KEY: str = ""
         self.RAPIDAPI_KEY: str = ""
-        self.AWS_ACCESS_KEY: str = ""
-        self.AWS_ACCESS_SECRET: str = ""
         self.DATALAMA_ACCESS_KEY: str = ""
         self.SHLINK_API_KEY: str = ""
         self.LASTFM_USERNAME: str = ""
