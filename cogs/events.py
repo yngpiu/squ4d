@@ -23,7 +23,6 @@ class Events(commands.Cog):
             [
                 ("watching", lambda: f"{self.bot.guild_count:,} servers"),
                 ("listening", lambda: f"{self.bot.member_count:,} members"),
-                ("playing", lambda: "misobot.xyz"),
             ]
         )
         self.activity_id = {"playing": 0, "streaming": 1, "listening": 2, "watching": 3}
