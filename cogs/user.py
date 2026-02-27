@@ -360,159 +360,9 @@ class User(commands.Cog):
         """Show various leaderboards"""
         await util.command_group_help(ctx)
 
-    @leaderboard.command(name="fishygifted")
-    async def leaderboard_fishy_gifted(self, ctx: commands.Context, scope=""):
-        """Most altruistic fishers leaderboard"""
-        if ctx.guild is None:
-            raise exceptions.CommandError("Unable to get current guild")
 
-        global_data = scope.lower() == "global"
-        data = await self.bot.db.fetch(
-            "SELECT user_id, fishy_gifted_count FROM fishy ORDER BY fishy_gifted_count DESC"
-        )
 
-        rows = []
-        if data:
-            medal_emoji = [":first_place:", ":second_place:", ":third_place:"]
-            i = 1
-            for user_id, fishy_count in data:
-                if global_data:
-                    user = self.bot.get_user(user_id)
-                else:
-                    user = ctx.guild.get_member(user_id)
 
-                if (
-                    user is None
-                    or user.bot
-                    or fishy_count == 0
-                    or util.user_is_blacklisted(ctx.bot, user)
-                ):
-                    continue
-
-                ranking = medal_emoji[i - 1] if i <= len(medal_emoji) else f"`#{i:2}`"
-                rows.append(
-                    f"{ranking} **{util.displayname(user)}** — **{fishy_count}** fishy gifted"
-                )
-                if i >= 200:
-                    break
-                i += 1
-        if not rows:
-            raise exceptions.CommandInfo("Nobody has gifted fish yet!")
-
-        content = discord.Embed(
-            title=(
-                f":fish: {'Global' if global_data else ctx.guild.name} "
-                "gifted fishy leaderboard"
-            ),
-            color=int("55acee", 16),
-        )
-        await RowPaginator(content, rows).run(ctx)
-
-    @leaderboard.command(name="fishy")
-    async def leaderboard_fishy(self, ctx: commands.Context, scope=""):
-        """Fishers leaderboard"""
-        if ctx.guild is None:
-            raise exceptions.CommandError("Unable to get current guild")
-
-        global_data = scope.lower() == "global"
-        data = await self.bot.db.fetch(
-            "SELECT user_id, fishy_count FROM fishy ORDER BY fishy_count DESC"
-        )
-
-        rows = []
-        if data:
-            medal_emoji = [":first_place:", ":second_place:", ":third_place:"]
-            i = 1
-            for user_id, fishy_count in data:
-                if global_data:
-                    user = self.bot.get_user(user_id)
-                else:
-                    user = ctx.guild.get_member(user_id)
-
-                if (
-                    user is None
-                    or user.bot
-                    or fishy_count == 0
-                    or util.user_is_blacklisted(ctx.bot, user)
-                ):
-                    continue
-
-                ranking = medal_emoji[i - 1] if i <= len(medal_emoji) else f"`#{i:2}`"
-                rows.append(
-                    f"{ranking} **{util.displayname(user)}** — **{fishy_count}** fishy"
-                )
-                if i >= 200:
-                    break
-                i += 1
-        if not rows:
-            raise exceptions.CommandInfo("Nobody has any fish yet!")
-
-        content = discord.Embed(
-            title=f":fish: {'Global' if global_data else ctx.guild.name} fishy leaderboard",
-            color=int("55acee", 16),
-        )
-        await RowPaginator(content, rows).run(ctx)
-
-    @leaderboard.command(name="wpm", aliases=["typing"])
-    async def leaderboard_wpm(self, ctx: commands.Context, scope=""):
-        """Typing speed leaderboard"""
-        if ctx.guild is None:
-            raise exceptions.CommandError("Unable to get current guild")
-
-        _global_ = scope == "global"
-
-        data = await self.bot.db.fetch(
-            """
-            WITH RankedTests AS (
-                SELECT user_id,
-                    wpm,
-                    test_date,
-                    word_count,
-                    ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY wpm DESC, test_date DESC) AS rn
-                FROM typing_stats
-            )
-
-            SELECT user_id,
-                wpm,
-                test_date,
-                word_count
-            FROM RankedTests
-            WHERE rn = 1
-            ORDER BY wpm DESC
-            """
-        )
-
-        rows = []
-        if data:
-            i = 1
-            for userid, wpm, test_date, word_count in data:
-                user = (
-                    self.bot.get_user(userid)
-                    if _global_
-                    else ctx.guild.get_member(userid)
-                )
-                if user is None or user.bot or util.user_is_blacklisted(ctx.bot, user):
-                    continue
-
-                if i <= len(self.medal_emoji):
-                    ranking = self.medal_emoji[i - 1]
-                else:
-                    ranking = f"`#{i:2}`"
-
-                rows.append(
-                    f"{ranking} **{util.displayname(user)}** — **{int(wpm)}** "
-                    f"WPM ({word_count} words, {arrow.get(test_date).to('utc').humanize()})"
-                )
-                i += 1
-
-        if not rows:
-            rows = ["No data."]
-
-        content = discord.Embed(
-            title=f":keyboard: {ctx.guild.name} WPM leaderboard",
-            color=int("99aab5", 16),
-        )
-        await RowPaginator(content, rows).run(ctx)
 
     @leaderboard.command(name="crowns")
     async def leaderboard_crowns(self, ctx: commands.Context):
@@ -589,8 +439,7 @@ class User(commands.Cog):
         if user.bot:
             badges.append(make_badge(badge_classes["bot"]))
 
-        if await queries.is_donator(ctx.bot, user):
-            badges.append(make_badge(badge_classes["patreon"]))
+
 
         user_settings = await self.bot.db.fetch_row(
             """
@@ -660,7 +509,7 @@ class User(commands.Cog):
             "USERNAME": user.name,
             "DISCRIMINATOR": f"#{user.discriminator}",
             "DESCRIPTION": description,
-            "FISHY_AMOUNT": fishy or 0,
+    
             "SERVER_LEVEL": 0,
             "GLOBAL_LEVEL": 0,
             "ACTIVITY_DATA": [],

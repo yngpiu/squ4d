@@ -14,7 +14,6 @@ from modules import emoji_literals, exceptions, queries, util
 from modules.media_embedders import (
     BaseEmbedder,
     InstagramEmbedder,
-    RedditEmbedder,
     TikTokEmbedder,
 )
 from modules.misobot import MisoBot
@@ -69,11 +68,7 @@ class Events(commands.Cog):
             # if ctx.guild is not None:
             #     await queries.save_command_usage(ctx)
 
-            if random.randint(1, 100) == 1 and not await queries.is_donator(
-                ctx.bot, ctx.author
-            ):
-                logger.info("Sending donation beg message")
-                await util.send_donation_beg(ctx.channel)
+
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -369,18 +364,7 @@ class Events(commands.Cog):
             embedder = InstagramEmbedder(self.bot)
             posts = embedder.extract_links(message.content, include_shortcodes=False)
             if posts:
-                if await util.server_is_premium(
-                    message.guild,
-                    self.bot,
-                ) or await util.user_is_donator(
-                    message.author,
-                    self.bot,
-                ):
-                    await self.embed_posts(posts, message, embedder)
-                else:
-                    raise exceptions.CommandInfo(
-                        "Only [donators](https://misobot.xyz/donate) can use autoembeds! (unless premium server)"
-                    )
+                await self.embed_posts(posts, message, embedder)
 
         if media_settings["tiktok"]:
             embedder = TikTokEmbedder(self.bot)
@@ -388,11 +372,6 @@ class Events(commands.Cog):
             if posts:
                 await self.embed_posts(posts, message, embedder)
 
-        if media_settings["reddit"]:
-            embedder = RedditEmbedder(self.bot)
-            posts = embedder.extract_links(message.content)
-            if posts:
-                await self.embed_posts(posts, message, embedder)
 
     @staticmethod
     async def easter_eggs(message: discord.Message):

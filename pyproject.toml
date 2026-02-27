@@ -31,7 +31,6 @@ dependencies = [
     "random-user-agent>=1.0.1",
     "redis>=6.4.0",
     "regex>=2025.9.1",
-    "shazamio>=0.8.1",
     "uvloop>=0.21.0",
 ]
 

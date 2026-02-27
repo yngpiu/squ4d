@@ -92,15 +92,14 @@ class Cache:
 
     async def cache_auto_embedders(self):
         media_embed_settings = await self.bot.db.fetch(
-            "SELECT guild_id, instagram, twitter, tiktok, reddit FROM media_auto_embed_enabled"
+            "SELECT guild_id, instagram, twitter, tiktok FROM media_auto_embed_enabled"
         )
         if media_embed_settings:
-            for guild_id, instagram, twitter, tiktok, reddit in media_embed_settings:
+            for guild_id, instagram, twitter, tiktok in media_embed_settings:
                 self.media_auto_embed[str(guild_id)] = {
                     "instagram": instagram,
                     "twitter": twitter,
                     "tiktok": tiktok,
-                    "reddit": reddit,
                 }
 
     async def initialize_settings_cache(self):

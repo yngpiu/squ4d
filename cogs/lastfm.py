@@ -312,7 +312,6 @@ class LastFm(commands.Cog):
         )
 
     @voting.command(name="upvote")
-    @util.patrons_only()
     async def voting_upvote(self, ctx: MisoContext, emoji: str):
         """Set the upvote emoji"""
         await ctx.message.add_reaction(emoji)
@@ -329,7 +328,6 @@ class LastFm(commands.Cog):
         await util.send_success(ctx, f"Your upvote reaction emoji is now {emoji}.")
 
     @voting.command(name="downvote")
-    @util.patrons_only()
     async def voting_downvote(self, ctx: commands.Context, emoji: str):
         """Set the downvote emoji"""
         await ctx.message.add_reaction(emoji)

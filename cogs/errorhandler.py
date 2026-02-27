@@ -172,11 +172,7 @@ class ErrorHandler(commands.Cog):
     async def handle_cooldown(
         self, ctx: commands.Context, error: commands.CommandOnCooldown
     ):
-        if (
-            ctx.author.id == ctx.bot.owner_id
-            or await queries.is_donator(self.bot, ctx.author, 2)
-            or await queries.is_vip(self.bot, ctx.author)
-        ):
+        if ctx.author.id == ctx.bot.owner_id:
             await self.reinvoke_command(ctx)
         else:
             await self.send_embed(

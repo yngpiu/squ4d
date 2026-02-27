@@ -19,7 +19,6 @@ from loguru import logger
 from modules import cache, maria, util
 from modules.help import EmbedHelpCommand
 from modules.keychain import Keychain
-from modules.reddit import Reddit
 from modules.redis import Redis
 
 
@@ -100,7 +99,6 @@ class MisoBot(commands.AutoShardedBot):
         self.boot_up_time: float | None = None
         self.trace_config = aiohttp.TraceConfig
         self.session: aiohttp.ClientSession
-        self.reddit_client = Reddit(self)
         self.donator_cache = {}
         self.register_hooks()
 

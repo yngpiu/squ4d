@@ -885,54 +885,7 @@ async def send_tasks_result_list(
     await RowPaginator(content, rows).run(ctx)
 
 
-async def server_is_premium(guild: discord.Guild, bot: "MisoBot") -> bool:
-    manager = await bot.db.fetch_value(
-        """
-        SELECT activated_by_user_id FROM premium_server
-        WHERE guild_id = %s
-        """,
-        guild.id,
-    )
-    if manager and await user_is_donator(bot.get_user(manager), bot):
-        return True
-    return False
 
-
-async def user_is_donator(user: discord.User, bot: "MisoBot") -> bool:
-    if (not bot.debug) and user.id == bot.owner_id:
-        return True
-    if await queries.is_donator(bot, user):
-        return True
-    if await queries.is_vip(bot, user):
-        return True
-    return False
-
-
-async def patron_check(ctx):
-    if (await user_is_donator(ctx.author, ctx.bot)) or (
-        await server_is_premium(ctx.guild, ctx.bot)
-    ):
-        return True
-    raise PatronCheckFailure
-
-
-def patrons_only():
-    async def predicate(ctx):
-        return await patron_check(ctx)
-
-    return commands.check(predicate)
-
-
-async def send_donation_beg(channel: "discord.abc.MessageableChannel"):
-    donate_link = "https://misobot.xyz/donate"
-    content = discord.Embed(
-        color=int("be1931", 16),
-        description=(
-            f":loudspeaker: Miso Bot is running solely on donations; "
-            f"Consider [donating]({donate_link}) if you like the bot!"
-        ),
-    )
-    await channel.send(embed=content, delete_after=15)
 
 
 def format_html(template, replacements):

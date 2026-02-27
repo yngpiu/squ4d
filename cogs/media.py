@@ -17,7 +17,6 @@ from modules import emojis, exceptions, util
 from modules.media_embedders import (
     BaseEmbedder,
     InstagramEmbedder,
-    RedditEmbedder,
     TikTokEmbedder,
     TwitterEmbedder,
 )
@@ -60,16 +59,16 @@ class Media(commands.Cog):
         ).run(ctx)
 
     @util.patrons_only()
-    @commands.group(usage="<instagram | tiktok | reddit>", case_insensitive=True)
+    @commands.group(usage="<instagram | tiktok>", case_insensitive=True)
     async def autoembedder(
-        self, ctx: commands.Context, provider: Literal["instagram", "tiktok", "reddit"]
+        self, ctx: commands.Context, provider: Literal["instagram", "tiktok"]
     ):
         """Set up automatic embeds for various media sources
 
         The links will be expanded automatically when detected in chat,
         without requiring the use of the corresponding command.
 
-        Supported providers: `instagram`, `tiktok`, `reddit`
+        Supported providers: `instagram`, `tiktok`
 
         Example: >autoembedder tiktok toggle
         """
@@ -219,18 +218,7 @@ class Media(commands.Cog):
         """
         await TwitterEmbedder(self.bot).process(ctx, links)
 
-    @commands.command(
-        usage="[OPTIONS] <links...>",
-    )
-    async def reddit(self, ctx: commands.Context, *, links: str):
-        """Retrieve media from a reddit post
 
-        OPTIONS
-            `-c`, `--caption` : also include the caption/text of the media
-            `-s`, `--spoiler` : spoiler the uploaded images and text
-            `-d`, `--delete`  : delete your message when the media is done embedding
-        """
-        await RedditEmbedder(self.bot).process(ctx, links)
 
     @commands.command(
         aliases=["tik", "tok", "tt"],
@@ -245,39 +233,6 @@ class Media(commands.Cog):
             `-d`, `--delete`  : delete your message when the media is done embedding
         """
         await TikTokEmbedder(self.bot).process(ctx, links)
-
-    @commands.command(aliases=["giphy", "gfy"])
-    async def gif(self, ctx: commands.Context, *, query):
-        """Search for gif from Giphy"""
-        gifs = []
-
-        URL = "https://api.giphy.com/v1/gifs/search"
-        params = {
-            "q": query,
-            "sort": "relevant",
-            "rating": "r",
-            "type": "gifs",
-            "limit": 100,
-            "api_key": self.bot.keychain.GIPHY_API_KEY,
-        }
-        async with self.bot.session.get(URL, params=params) as response:
-            if response.ok:
-                data = await response.json()
-                gifs = data["data"]
-
-        if not gifs:
-            # go for web scraping backup
-            logger.warning("Giphy API response was not 200, going for web scraping...")
-            URL = f"https://giphy.com/search/{urllib.parse.quote(query)}"
-            async with self.bot.session.get(URL, params={"rating": "r"}) as response:
-                soup = BeautifulSoup(await response.text(), "lxml")
-                raw_json = re.search(
-                    r"gifs: (.*),\n\s*nextUrl:",
-                    soup.findAll("script")[-2].text,
-                ).group(1)
-                gifs = orjson.loads('{"gifs": ' + raw_json + "}")["gifs"]
-
-        await GiphyUI(gifs).run(ctx)
 
     @commands.command(usage="<day | month | realtime | rising>")
     async def melon(self, ctx: commands.Context, timeframe):
@@ -353,39 +308,6 @@ async def setup(bot):
     await bot.add_cog(Media(bot))
 
 
-class GiphyUI(discord.ui.View):
-    def __init__(self, gifs: list):
-        super().__init__()
-        self.history = []
-        self._current_page = 0
-        self.message: discord.Message
-        self.gifs = gifs
-
-    @discord.ui.button(
-        emoji="<:left:997949561911918643>",
-        style=discord.ButtonStyle.gray,
-        disabled=True,
-    )
-    async def on_arrow_backward(
-        self, interaction: discord.Interaction, _button: discord.ui.Button
-    ) -> None:
-        self._current_page = self.history.pop()
-        await self.update(interaction)
-
-    @discord.ui.button(emoji=emojis.REPEAT, style=discord.ButtonStyle.primary)
-    async def randomize(
-        self, interaction: discord.Interaction, _button: discord.ui.Button
-    ):
-        self.history.append(self._current_page)
-        self._current_page = random.randint(1, len(self.gifs))
-        await self.update(interaction)
-
-    @discord.ui.button(emoji=emojis.CONFIRM, style=discord.ButtonStyle.success)
-    async def confirm(
-        self, interaction: discord.Interaction, _button: discord.ui.Button
-    ):
-        await interaction.response.defer()
-        await self.remove_ui()
 
     @discord.ui.button(emoji=emojis.REMOVE, style=discord.ButtonStyle.danger)
     async def delete(

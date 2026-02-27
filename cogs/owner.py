@@ -231,7 +231,6 @@ class Owner(commands.Cog):
             ctx, f"**{user}** donation changed to **Tier {new_tier}**"
         )
 
-    @commands.group(name="premium", case_insensitive=True)
     @commands.is_owner()
     async def premium(self, ctx: commands.Context):
         await util.command_group_help(ctx)

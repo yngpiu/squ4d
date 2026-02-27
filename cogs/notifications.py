@@ -175,17 +175,7 @@ class Notifications(commands.Cog):
                 "Global notifications have been removed for performance reasons."
             )
 
-        if not await queries.is_donator(ctx.bot, ctx.author, 2):
-            amount = await self.bot.db.fetch_value(
-                "SELECT COUNT(*) FROM notification WHERE user_id = %s",
-                ctx.author.id,
-            )
-            if amount and amount >= 25:
-                raise exceptions.CommandWarning(
-                    f"You can only have a maximum of **25** notifications. You have **{amount}** "
-                    "(Become a tier 2 [donator](https://misobot.xyz/donate) "
-                    "for unlimited notifications)"
-                )
+
 
         try:
             await ctx.message.delete()

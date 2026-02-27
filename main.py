@@ -50,17 +50,14 @@ if developer_mode:
     prefix = "<"
 else:
     TOKEN = os.environ["MISO_BOT_TOKEN"]
-    prefix = ">"
+    prefix = "*"
 
 logger.info(f'Launching with default prefix "{prefix}"')
 
 extensions = [
     "errorhandler",
     "events",
-    "configuration",
     "customcommands",
-    "fishy",
-    "information",
     "roles",
     "mod",
     "owner",
@@ -70,13 +67,7 @@ extensions = [
     "lastfm",
     "user",
     "utility",
-    "typings",
-    "kpop",
     "prometheus",
-]
-
-infrastructure_extensions = [
-    "webserver",
 ]
 
 
@@ -86,8 +77,8 @@ def main():
             f"{os.environ['DISCORD_PROXY']}/api/v{discord.http.INTERNAL_API_VERSION}"
         )
 
-    bot: MisoBot = MisoBot(
-        extensions=extensions + ([] if developer_mode else infrastructure_extensions),
+    bot = MisoBot(
+        extensions=extensions,
         default_prefix=prefix,
     )
     if developer_mode:

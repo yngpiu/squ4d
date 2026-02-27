@@ -43,35 +43,6 @@ async def update_setting(ctx, table, setting, new_value):
     )
 
 
-async def is_donator(
-    bot: "MisoBot",
-    user: discord.User | discord.Member,
-    unlock_tier: int | None = None,
-):
-    data = await bot.db.fetch_row(
-        """
-        SELECT donation_tier, currently_active FROM donator
-        WHERE user_id = %s
-        """,
-        user.id,
-    )
-    if not data:
-        return False
-
-    if unlock_tier is not None:
-        return data[1] and data[0] >= unlock_tier
-
-    return True
-
-
-async def is_vip(bot: MisoBot, user: discord.User | discord.Member):
-    vips = await bot.db.fetch_flattened(
-        """
-        SELECT user_id FROM vip_user
-        """
-    )
-    return vips and user.id in vips
-
 
 async def is_blacklisted(ctx):
     """Check command invocation context for blacklist triggers"""
