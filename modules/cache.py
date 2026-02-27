@@ -18,98 +18,13 @@ class Cache:
         self.rolepickers = set()
         self.autoresponse = {}
         self.blacklist = {}
-        self.logging_settings = {}
-        self.autoroles = {}
         self.marriages = []
-        self.starboard_settings = {}
-        self.starboard_blacklisted_channels = set()
-        self.media_auto_embed = {}
 
-    async def cache_starboard_settings(self):
-        data = await self.bot.db.fetch(
-            """
-            SELECT guild_id, is_enabled, channel_id, reaction_count,
-                emoji_name, emoji_id, emoji_type, log_channel_id
-            FROM starboard_settings
-            """
-        )
-        if not data:
-            return
-        for (
-            guild_id,
-            is_enabled,
-            channel_id,
-            reaction_count,
-            emoji_name,
-            emoji_id,
-            emoji_type,
-            log_channel_id,
-        ) in data:
-            self.starboard_settings[str(guild_id)] = [
-                is_enabled,
-                channel_id,
-                reaction_count,
-                emoji_name,
-                emoji_id,
-                emoji_type,
-                log_channel_id,
-            ]
 
-        self.starboard_blacklisted_channels = set(
-            await self.bot.db.fetch_flattened(
-                "SELECT channel_id FROM starboard_blacklist",
-            )
-        )
-
-    async def cache_logging_settings(self):
-        logging_settings = await self.bot.db.fetch(
-            """
-            SELECT guild_id, member_log_channel_id, ban_log_channel_id, message_log_channel_id
-            FROM logging_settings
-            """
-        )
-        if logging_settings:
-            for (
-                guild_id,
-                member_log_channel_id,
-                ban_log_channel_id,
-                message_log_channel_id,
-            ) in logging_settings:
-                self.logging_settings[str(guild_id)] = {
-                    "member_log_channel_id": member_log_channel_id,
-                    "ban_log_channel_id": ban_log_channel_id,
-                    "message_log_channel_id": message_log_channel_id,
-                }
-
-    async def cache_autoroles(self):
-        data = await self.bot.db.fetch("SELECT guild_id, role_id FROM autorole")
-        if data:
-            for guild_id, role_id in data:
-                try:
-                    self.autoroles[str(guild_id)].add(role_id)
-                except KeyError:
-                    self.autoroles[str(guild_id)] = {role_id}
-
-    async def cache_auto_embedders(self):
-        media_embed_settings = await self.bot.db.fetch(
-            "SELECT guild_id, instagram, twitter, tiktok FROM media_auto_embed_enabled"
-        )
-        if media_embed_settings:
-            for guild_id, instagram, twitter, tiktok in media_embed_settings:
-                self.media_auto_embed[str(guild_id)] = {
-                    "instagram": instagram,
-                    "twitter": twitter,
-                    "tiktok": tiktok,
-                }
 
     async def initialize_settings_cache(self):
         logger.info("Caching settings...")
 
-        self.rolepickers = set(
-            await self.bot.db.fetch_flattened(
-                "SELECT channel_id FROM rolepicker_settings"
-            )
-        )
 
         guild_settings = await self.bot.db.fetch(
             "SELECT guild_id, autoresponses FROM guild_settings"
@@ -168,7 +83,4 @@ class Cache:
                         "command": {command_name.lower()},
                     }
 
-        await self.cache_starboard_settings()
-        await self.cache_logging_settings()
-        await self.cache_autoroles()
-        await self.cache_auto_embedders()
+
