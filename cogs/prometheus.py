@@ -83,8 +83,10 @@ class Prometheus(commands.Cog):
         users_total = self.bot.member_count
         users_cached = len(self.bot.users)
 
-        median_member_count = statistics.median(
-            guild.member_count or 0 for guild in self.bot.guilds
+        median_member_count = (
+            statistics.median(guild.member_count or 0 for guild in self.bot.guilds)
+            if self.bot.guilds
+            else 0
         )
 
         self.guilds_total.set(guilds_total)
