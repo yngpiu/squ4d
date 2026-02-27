@@ -265,6 +265,10 @@ class LastFm(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def lastfm_login_task(self):
+        if not self.bot.keychain.LASTFM_USERNAME or not self.bot.keychain.LASTFM_PASSWORD:
+            self.lastfm_login_task.cancel()
+            return
+            
         logger.info("Running lastfm login task...")
         try:
             await self.api.login(

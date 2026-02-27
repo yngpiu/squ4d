@@ -58,7 +58,6 @@ class Media(commands.Cog):
             ]
         ).run(ctx)
 
-    @util.patrons_only()
     @commands.group(usage="<instagram | tiktok>", case_insensitive=True)
     async def autoembedder(
         self, ctx: commands.Context, provider: Literal["instagram", "tiktok"]
@@ -193,7 +192,6 @@ class Media(commands.Cog):
         aliases=["ig", "insta"],
         usage="[OPTIONS] <links...>",
     )
-    @util.patrons_only()
     async def instagram(self, ctx: commands.Context, *, links: str):
         """Retrieve media from Instagram post, reel or story
 

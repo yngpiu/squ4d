@@ -19,7 +19,6 @@ from loguru import logger
 
 from modules import emojis, exceptions, queries, util
 from modules.misobot import MisoBot
-from modules.shazam import Shazam
 from modules.ui import BaseButtonPaginator, Compliance, RowPaginator
 
 

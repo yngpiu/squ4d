@@ -10,7 +10,6 @@ from loguru import logger
 class Keychain:
     def __init__(self):
         self.LASTFM_API_KEY: str = ""
-        self.LASTFM_SECRET: str = ""
         self.GCS_DEVELOPER_KEY: str = ""
         self.RAPIDAPI_KEY: str = ""
         self.DATALAMA_ACCESS_KEY: str = ""
@@ -21,11 +20,7 @@ class Keychain:
 
         for name in self.__dict__:
             value = os.environ.get(name)
-            optional = [
-                "PROXY_URL",
-                "PROXY_USER",
-                "PROXY_PASS",
-            ]
+            optional = []
             if not value and name not in optional:
                 logger.warning(f'No value set for env variable "{name}"')
 

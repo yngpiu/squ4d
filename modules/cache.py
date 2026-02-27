@@ -104,10 +104,6 @@ class Cache:
 
     async def initialize_settings_cache(self):
         logger.info("Caching settings...")
-        prefixes = await self.bot.db.fetch("SELECT guild_id, prefix FROM guild_prefix")
-        if prefixes:
-            for guild_id, prefix in prefixes:
-                self.prefixes[str(guild_id)] = prefix
 
         self.rolepickers = set(
             await self.bot.db.fetch_flattened(
