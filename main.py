@@ -50,7 +50,7 @@ if developer_mode:
     prefix = "<"
 else:
     TOKEN = os.environ["MISO_BOT_TOKEN"]
-    prefix = "."
+    prefix = "*"
 
 logger.info(f'Launching with default prefix "{prefix}"')
 
